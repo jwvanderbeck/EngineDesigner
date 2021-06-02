@@ -1,0 +1,12 @@
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<ItemGroup>
+  <FilesToCopy Include="$(OutputPath)\EngineDesigner*.dll" />
+</ItemGroup>
+<ItemGroup>
+  <PDBToCopy Include="$(OutputPath)\EngineDesigner*.pdb" />
+</ItemGroup>
+<Target Name="AfterBuild">
+  <Copy SourceFiles="@(FilesToCopy)" DestinationFolder="..\GameData\EngineDesigner\Plugins\" />
+  <Copy SourceFiles="@(PDBToCopy)" DestinationFolder="..\GameData\EngineDesigner\Plugins\" />
+</Target>
+</Project>
