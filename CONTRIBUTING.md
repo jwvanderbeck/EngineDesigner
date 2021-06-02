@@ -10,6 +10,10 @@ There are three main components to this project; The core engine solver, the KSP
 
 ## Building
 To build the project you can either build the Core by itself if desired, or more often you want to build both the Core and the KSP mod at the same time.  You can do this with the `EngineDesignerKSPFull.sln` solution.  This will build the Core and KSP libraries, as well as copy the Core DLL into the Unity side, and copy both the Core and KSP DLLs to `./GameData/EngineDesigner/Plugins`.
+**NOTE** That building the KSP code requires the KSP assemblies which are not distributed with this project for legal reasons.  You will need to provide them from your copy of the game. By default the project expexts them to be in `./bin`.  If you want to put them elsewhere please **do not** change the project files to repoint but instead us a local ReferencePath either in Visual Studio. msbuild, or Rider.
+
+The first time you compile you may need to manually create `./GameData/Plugins`
+
 The Unity side is not "compiled".  Simply open the unity project in the Unity Editor using **2019.2.2f1** (unityhub://2019.2.2f1/ab112815d860) and point to the `./Unity` folder.
 
 ## KSP Configs
