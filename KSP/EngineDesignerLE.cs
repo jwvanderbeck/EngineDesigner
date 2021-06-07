@@ -1,6 +1,8 @@
 ﻿// using Simulation.Engines.Liquid;
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Simulation.Engines.Liquid;
 using UnityEngine;
 
@@ -16,37 +18,37 @@ namespace ksp
              guiActiveEditor = true,
              guiName = "Fuel"), 
          UI_ChooseOption(suppressEditorShipModified = true)]
-        public string fuelString = "RP-1";
+        public string fuelString = "Kerosene";
         
         [KSPField(isPersistant = true, 
              groupName = k_engineInputsGroupName, groupDisplayName = k_engineInputsGroupDisplayName,
              guiActiveEditor = true,
              guiName = "Oxidizer"), 
          UI_ChooseOption(suppressEditorShipModified = true)]
-        public string oxidizerString = "Liquid Oxygen";
+        public string oxidizerString = "LqdOxygen";
         
         [KSPField(isPersistant = true, 
             groupName = k_engineInputsGroupName, groupDisplayName = k_engineInputsGroupDisplayName,
             guiActiveEditor = true,
             guiName = "Chamber Pressure", guiFormat = "N2", guiUnits = "bar"), 
-         UI_FloatEdit(sigFigs = 2, suppressEditorShipModified = true,
-             minValue = 1, maxValue = 400)]
+         UI_FloatRange(suppressEditorShipModified = true,
+             minValue = 1, maxValue = 400, stepIncrement = 1)]
         public float chamberPressure= 10f;
 
         [KSPField(isPersistant = true, 
              groupName = k_engineInputsGroupName, groupDisplayName = k_engineInputsGroupDisplayName,
              guiActiveEditor = true,
-             guiName = "Oxidizer to Fuel Ratio", guiFormat = "N2", guiUnits = ":1"), 
-         UI_FloatEdit(sigFigs = 2, suppressEditorShipModified = true,
-             minValue = 1, maxValue = 3)]
+             guiName = "O/F Ratio", guiFormat = "N2", guiUnits = ":1"), 
+         UI_FloatRange(suppressEditorShipModified = true,
+             minValue = 1, maxValue = 7, stepIncrement = 0.01f)]
         public float propellantRatio = 2.00f;
 
         [KSPField(isPersistant = true, 
              groupName = k_engineInputsGroupName, groupDisplayName = k_engineInputsGroupDisplayName,
              guiActiveEditor = true,
-             guiName = "Nozzle Exit Diameter", guiFormat = "N2", guiUnits = "m"), 
+             guiName = "Nozzle Diam", guiFormat = "N2", guiUnits = "m"), 
          UI_FloatEdit(sigFigs = 2, suppressEditorShipModified = true,
-             minValue = 0.1f, maxValue = 10f)]
+             minValue = 0.1f, maxValue = 10f, incrementSmall = 0.1f, incrementLarge = 1)]
         public float nozzleDiameter = 1f;
 
         [KSPField(isPersistant = true,
@@ -54,7 +56,7 @@ namespace ksp
              guiActiveEditor = true,
              guiName = "Expansion Ratio", guiFormat = "N1"),
          UI_FloatEdit(sigFigs = 1, suppressEditorShipModified = true,
-             minValue = 2, maxValue = 50)]
+             minValue = 2, maxValue = 50, incrementSmall = 0.1f, incrementLarge = 1)]
         public float expansionRatio = 7.46f;
 
         [KSPField(isPersistant = false, groupName = k_engineInputsGroupName, groupDisplayName = k_engineInputsGroupDisplayName, guiActiveEditor = true), UI_Toggle(scene = UI_Scene.Editor)]
@@ -81,7 +83,7 @@ namespace ksp
         public float molecularWeight;
         [KSPField(groupName = k_engineTransientsGroupName, groupDisplayName = k_engineTransientsGroupDisplayName,
             guiActiveEditor = true,
-            guiName = "Pressure Ratio", guiFormat = "N2")]
+            guiName = "Pressure Ratio", guiFormat = "N6")]
         public float pressureRatio;
         [KSPField(groupName = k_engineTransientsGroupName, groupDisplayName = k_engineTransientsGroupDisplayName,
             guiActiveEditor = true,
@@ -193,6 +195,19 @@ namespace ksp
             Solve();
         }
 
+        private void OnPropellantChanged(BaseField arg1, object arg2)
+        {
+            BiPropellantConfig biprop;
+            var found = EngineDesignerKSP.Instance.TryGetBipropellant(fuelString, oxidizerString, out biprop);
+            if (!found)
+            {
+                Debug.Log($"[ED] Error - Could not find biprop for {fuelString} & {oxidizerString}");
+                return;
+            }
+            solverEngine.PropellantMixture = BiPropellant.CreateInstanceFromDataStore(biprop);
+            Solve();
+        }
+
         public void Initialize()
         {
             InitializeUI();
@@ -203,13 +218,16 @@ namespace ksp
 
         public void InitializeUI()
         {
-            fuelOptions = new[] { "RP-1" };
-            oxidizerOptions = new[] { "Liquid Oxygen" };
+            fuelOptions = new[] { "Kerosene" };
+            oxidizerOptions = new[] { "LqdOxygen" };
 
-            Fields[nameof(propellantRatio)].uiControlEditor.onFieldChanged = OnPropellantRatioChanged;
-            Fields[nameof(chamberPressure)].uiControlEditor.onFieldChanged = OnChamberPressureChanged;
-            Fields[nameof(nozzleDiameter)].uiControlEditor.onFieldChanged = OnNozzleDiameterChanged;
-            Fields[nameof(expansionRatio)].uiControlEditor.onFieldChanged = OnExpansionRatioChanged;
+            Fields[nameof(propellantRatio)].uiControlEditor.onFieldChanged += OnPropellantRatioChanged;
+            Fields[nameof(chamberPressure)].uiControlEditor.onFieldChanged += OnChamberPressureChanged;
+            Fields[nameof(nozzleDiameter)].uiControlEditor.onFieldChanged += OnNozzleDiameterChanged;
+            Fields[nameof(expansionRatio)].uiControlEditor.onFieldChanged += OnExpansionRatioChanged;
+            Fields[nameof(fuelString)].uiControlEditor.onFieldChanged += OnPropellantChanged;
+            Fields[nameof(oxidizerString)].uiControlEditor.onFieldChanged += OnPropellantChanged;
+            
 
             var fuelChooser = (UI_ChooseOption)GetWidget(this, nameof(fuelString));
             fuelChooser.options = fuelOptions;
@@ -218,7 +236,6 @@ namespace ksp
             var oxidizerChooser = (UI_ChooseOption)GetWidget(this, nameof(oxidizerString));
             oxidizerChooser.options = oxidizerOptions;
             oxidizerChooser.display = oxidizerOptions;
-
         }
         
         private static UI_Control GetWidget(PartModule module, string fieldName)
