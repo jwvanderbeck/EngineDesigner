@@ -3,10 +3,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using EngineDesignerKSP.ConfigNodes;
+using KSP.UI;
 using Simulation.Engines.Liquid;
 using UnityEngine;
+using TMPro;
 
-namespace ksp
+namespace EngineDesignerKSP
 {
     public class EngineDesignerLE : PartModule
     {
@@ -148,6 +151,40 @@ namespace ksp
                 bipropellants.Add(bipropConfig);
             }
             Debug.Log($"[EngineDesignerLE] Loaded {bipropellants.Count} biprop configs");
+
+            var bundle = EngineDesignerKSP.Instance.UIAssetBundle;
+            if (bundle != null)
+            {
+                var testAsset = bundle.LoadAsset<GameObject>("TestWindow");
+                if (testAsset == null)
+                {
+                    Debug.Log("[EngineDesignerLE] TestWindow is null!");
+                }
+                else
+                {
+                    Instantiate(testAsset);
+                    testAsset.transform.SetParent(MainCanvasUtil.MainCanvas.transform, false);    
+                    testAsset.SetActive(true);
+                    Debug.Log("[EngineDesignerLE] Instantiated test window and attached to MainCanvas");
+                }
+            }
+            else
+            {
+                Debug.Log("[EngineDesignerLE] Unable to find bundle");
+                bundle = AssetBundle.LoadFromFile(KSPUtil.ApplicationRootPath + "GameData/EngineDesigner/Resources/enginedesigner_ui");
+                var testAsset = bundle.LoadAsset<GameObject>("TestWindow");
+                if (testAsset == null)
+                {
+                    Debug.Log("[EngineDesignerLE] TestWindow is null!");
+                }
+                else
+                {
+                    Instantiate(testAsset);
+                    testAsset.SetActive(true);
+                    testAsset.transform.SetParent(MainCanvasUtil.MainCanvas.transform, false);            
+                    Debug.Log("[EngineDesignerLE] Instantiated test window and attached to MainCanvas");
+                }
+            }
             
             Initialize();
         }

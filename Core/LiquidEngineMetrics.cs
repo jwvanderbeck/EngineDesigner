@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace Simulation.Engines.Liquid
 {
@@ -15,6 +16,9 @@ namespace Simulation.Engines.Liquid
         public float specificHeatRatio;
         public float molecularWeight;
         public float pressureRatio;
+        public float machNumber;
+        public float throatDiameter;
+        
         
         const float gasConstant = 8314.4621f; // metric, J/kmol-K
         
@@ -30,7 +34,38 @@ namespace Simulation.Engines.Liquid
             float thrust = mdot * Ve + (Pe - atmospherePressure) * Ae;
 
             return thrust;
-        }    
+        }
+
+        public float ThrustAtVacuum()
+        {
+            SolvePressureRatio();
+            float Ve = IdealExhaustVelocity();
+            float mdot = MassFlowRate();
+            float Pe = chamberPressure * pressureRatio;
+
+            float thrust = mdot * Ve;
+
+            return thrust;
+        }
+
+        public void SolveForThrust(float desiredThrust)
+        {
+            var mdot = MassFlowForVacuumThrust(desiredThrust);
+            var Astar = ThroatAreaForMassFlowRate(mdot);
+            throatDiameter = (float)Math.Sqrt(Astar / (float)Math.PI) * 2f;
+        }
+
+        public float MassFlowForVacuumThrust(float vacuumThrust)
+        {
+            SolvePressureRatio();
+            float Ve = IdealExhaustVelocity();
+            float Ae = (pi * nozzleDiameter * nozzleDiameter) / 4f;
+            float Pe = chamberPressure * pressureRatio;
+
+            float mdot = (vacuumThrust - Ae * Pe) / Ve;
+
+            return mdot;
+        }
         
         public float IdealExhaustVelocity()
         {
@@ -58,6 +93,27 @@ namespace Simulation.Engines.Liquid
             float term2 = (float)Math.Pow((gamma / R) * (float)Math.Pow(2f / (gamma + 1), (gamma + 1f) / (gamma - 1f)), 0.5f);
 
             return term1 * term2;
+            
+        }
+
+        public float ThroatAreaForMassFlowRate(float mdot)
+        {
+            // m=(P*t/sqrt(T))((g/R*2/(g+1)^(g+1)/(g-1))^0.5)
+            // t=[m * (float)Math.Sqrt(T0)]/((float)Math.Sqrt(2) * P0 * (float)Math.Sqrt((float)Math.Pow(gamma * (gamma + 1f)),gamma * -1f) / (gamma * gamma - 1f)*R) ) 
+            float P0 = chamberPressure;
+            float T0 = combustionTemperature;
+            float gamma = specificHeatRatio;
+            float R = gasConstant / molecularWeight;
+
+            return (mdot * (float)Math.Sqrt(T0)) / ((float)Math.Sqrt(2) * P0 * (float)Math.Sqrt((float)Math.Pow(gamma * (gamma + 1f), gamma * -1f) / (gamma * gamma - 1f) * R));
+        }
+
+        public float ExitDiameterForThroatArea(float AStar)
+        {
+            // t=(3.1415*d*d)/4/r
+            // d = (2 * sqrt(r) * sqrt(t)) / sqrt(pi)
+            var d = (2f * (float)Math.Sqrt(expansionRatio) * (float)Math.Sqrt(AStar)) / (float)Math.Sqrt(Math.PI);
+            return d;
         }
 
         public float SolvePressureRatio()
@@ -118,6 +174,7 @@ namespace Simulation.Engines.Liquid
                 m1 = m0 + ((expansionRatio - a0) / am);
             }
             var mach = m0;
+            machNumber = mach;
             return mach;
         }
         

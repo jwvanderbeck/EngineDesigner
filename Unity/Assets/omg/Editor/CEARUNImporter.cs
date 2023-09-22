@@ -4,8 +4,9 @@ using Simulation.Engines.Liquid;
 using System.Text.RegularExpressions;
 using UnityEditor.Experimental.AssetImporters;
 using UnityEngine;
+using omg.Runtime;
 
-namespace omg.Runtime
+namespace omg.Editor
 {
     [ScriptedImporter(1, "cearun")]
     public class CEARUNImporter : ScriptedImporter

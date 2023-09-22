@@ -1,6 +1,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 <ItemGroup>
   <FilesToCopy Include="$(OutputPath)\EngineDesigner*.dll" />
+  <ConfigsToCopy Include="$(SolutionDir)\Unity\Assets\Data\Configs\*.cfg" />
 </ItemGroup>
 <ItemGroup>
   <PDBToCopy Include="$(OutputPath)\EngineDesigner*.pdb" />
@@ -8,6 +9,7 @@
 <Target Name="AfterBuild">
   <Copy SourceFiles="@(FilesToCopy)" DestinationFolder="..\GameData\EngineDesigner\Plugins\" />
   <Copy SourceFiles="@(PDBToCopy)" DestinationFolder="..\GameData\EngineDesigner\Plugins\" />
+  <Copy SourceFiles="@(ConfigsToCopy)" DestinationFolder="..\GameData\EngineDesigner\" />
   <Copy SourceFiles="@(FilesToCopy)" DestinationFolder="..\Unity\Assets\Plugins\" />
   <Copy SourceFiles="@(PDBToCopy)" DestinationFolder="..\Unity\Assets\Plugins\" />
 </Target>

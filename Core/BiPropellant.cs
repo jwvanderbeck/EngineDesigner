@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Simulation.Engines.Liquid.Interfaces;
 
 namespace Simulation.Engines.Liquid
 {
@@ -266,14 +267,5 @@ namespace Simulation.Engines.Liquid
             internal float specificHeatRatio;
             internal float molecularWeight;
         }
-    }
-
-    public interface IThermodynamicDataStore
-    {
-        float[] AvailableRatios { get; }
-        float[] AvailableChamberPressuresForRatio(float ratio);
-        
-        void GetData(float ofRatio, float chamberPressure,
-            out float combustionTemperature, out float specificHeatRatio, out float molecularWeight);
     }
 }

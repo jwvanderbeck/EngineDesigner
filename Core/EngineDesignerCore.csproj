@@ -41,6 +41,7 @@
     <ItemGroup>
         <Compile Include="BiPropellant.cs" />
         <Compile Include="EngineTransients.cs" />
+        <Compile Include="Interfaces\IThermodynamicDataStore.cs" />
         <Compile Include="LiquidEngineMetrics.cs" />
         <Compile Include="LiquidEngineSolver.cs" />
         <Compile Include="Propellant.cs" />

@@ -13,6 +13,7 @@ namespace omg.Unity.Runtime
         public float chamberPressure;
         public float nozzleDiameter;
         public float expansionRatio;
+        public float inputThrust;
         
         // Derived
         /// <summary>
@@ -29,6 +30,8 @@ namespace omg.Unity.Runtime
         public float pressureRatio;
         public float massFlowRate;
         public float exhaustVelocity;
+        public float machNumber;
+        public float throatDiameter;
         
         // Solved
         public float seaLevelThrust;
@@ -71,12 +74,16 @@ namespace omg.Unity.Runtime
 
         public void UpdateSolver()
         {
+            if (solverEngine == null) return;
+            
             solverEngine.EfficiencyFactor = 1f;
             solverEngine.ChamberPressure = chamberPressure;
             solverEngine.NozzleDiameter = nozzleDiameter;
             solverEngine.ExpansionRatio = expansionRatio;
             solverEngine.PropellantRatio = propellantRatio;
-            solverEngine.UpdateDerivedProperties();
+            solverEngine.InputThrust = inputThrust;
+            solverEngine.SolveWithThrust();
+            solverEngine.SolveWithNozzleDiameter();
 
             actualPropellantRatio = solverEngine.actualPropellantRatio;
             combustionTemperature = solverEngine.combustionTemperature;
@@ -85,6 +92,7 @@ namespace omg.Unity.Runtime
             pressureRatio = solverEngine.pressureRatio;
             massFlowRate = solverEngine.massFlowRate;
             exhaustVelocity = solverEngine.exhaustVelocity;
+            throatDiameter = solverEngine.throatDiameter;
 
             seaLevelThrust = solverEngine.seaLevelThrust;
             seaLevelIsp = solverEngine.seaLevelIsp;

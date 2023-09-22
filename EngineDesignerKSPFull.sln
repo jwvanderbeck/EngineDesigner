@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EngineDesignerCore", "Core\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EngineDesignerKSP", "KSP\EngineDesignerKSP.csproj", "{A6C38E85-89E4-48B9-B1A5-8C2C2079923B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EngineDesignerUI", "UI\EngineDesignerUI.csproj", "{3B76FA42-88E1-44C7-B92D-5A8D78A0E0DD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{A6C38E85-89E4-48B9-B1A5-8C2C2079923B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6C38E85-89E4-48B9-B1A5-8C2C2079923B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6C38E85-89E4-48B9-B1A5-8C2C2079923B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B76FA42-88E1-44C7-B92D-5A8D78A0E0DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B76FA42-88E1-44C7-B92D-5A8D78A0E0DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B76FA42-88E1-44C7-B92D-5A8D78A0E0DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B76FA42-88E1-44C7-B92D-5A8D78A0E0DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -14,6 +14,7 @@ namespace omg.Editor
         private SerializedProperty propellantRatio;
         private SerializedProperty nozzleDiameter;
         private SerializedProperty expansionRatio;
+        private SerializedProperty inputThrust;
 
         public void OnEnable()
         {
@@ -23,6 +24,7 @@ namespace omg.Editor
             propellantRatio = serializedObject.FindProperty(nameof(propellantRatio));
             nozzleDiameter = serializedObject.FindProperty(nameof(nozzleDiameter));
             expansionRatio = serializedObject.FindProperty(nameof(expansionRatio));
+            inputThrust = serializedObject.FindProperty(nameof(inputThrust));
         }
         public override void OnInspectorGUI()
         {
@@ -46,6 +48,7 @@ namespace omg.Editor
             EditorGUILayout.PropertyField(propellantRatio);
             EditorGUILayout.PropertyField(nozzleDiameter);
             EditorGUILayout.PropertyField(expansionRatio);
+            EditorGUILayout.PropertyField(inputThrust);
             
             GUILayout.Space(25);
             
@@ -54,13 +57,15 @@ namespace omg.Editor
             EditorGUILayout.LabelField("Combustion Temperature", $"{solver.combustionTemperature} K");
             EditorGUILayout.LabelField("Specific Heat Ratio", $"{solver.specificHeatRatio}");
             EditorGUILayout.LabelField("Molecular Weight", $"{solver.molecularWeight}");
-            
+
             GUILayout.Space(25);
             
             EditorGUILayout.HelpBox($"Engine Transients", MessageType.None);
             EditorGUILayout.LabelField("Pressure Ratio", $"{solver.pressureRatio}");
-            EditorGUILayout.LabelField("Mass Flow Rate", $"{solver.massFlowRate}");
-            EditorGUILayout.LabelField("Exhaust Velocity", $"{solver.exhaustVelocity}");
+            EditorGUILayout.LabelField("Mass Flow Rate", $"{solver.massFlowRate} kg/s");
+            EditorGUILayout.LabelField("Exhaust Velocity", $"{solver.exhaustVelocity} m/s");
+            EditorGUILayout.LabelField("Mach Number", $"{solver.machNumber}");
+            EditorGUILayout.LabelField("Throat Diameter", $"{solver.throatDiameter*100:N2} cm");
             
             GUILayout.Space(25);
             

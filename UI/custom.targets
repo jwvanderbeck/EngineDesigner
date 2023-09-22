@@ -1,0 +1,19 @@
+﻿<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <ItemGroup>
+        <FilesToCopy Include="$(OutputPath)\EngineDesigner*.dll" />
+        <AssetBundlesToCopy Include="$(SolutionDir)\Unity\Assets\StreamingAssets\enginedesigner_ui" />
+        <AssetBundlesToCopy Include="$(SolutionDir)\Unity\Assets\StreamingAssets\enginedesigner_ui.manifest" />
+        <AssetBundlesToCopy Include="$(SolutionDir)\Unity\Assets\StreamingAssets\Resources" />
+        <AssetBundlesToCopy Include="$(SolutionDir)\Unity\Assets\StreamingAssets\Resources.manifest" />
+    </ItemGroup>
+    <ItemGroup>
+        <PDBToCopy Include="$(OutputPath)\EngineDesigner*.pdb" />
+    </ItemGroup>
+    <Target Name="AfterBuild">
+        <Copy SourceFiles="@(FilesToCopy)" DestinationFolder="..\GameData\EngineDesigner\Plugins\" />
+        <Copy SourceFiles="@(PDBToCopy)" DestinationFolder="..\GameData\EngineDesigner\Plugins\" />
+        <Copy SourceFiles="@(AssetBundlesToCopy)" DestinationFolder="..\GameData\EngineDesigner\Resources\" />
+        <Copy SourceFiles="@(FilesToCopy)" DestinationFolder="..\Unity\Assets\Plugins\" />
+        <Copy SourceFiles="@(PDBToCopy)" DestinationFolder="..\Unity\Assets\Plugins\" />
+    </Target>
+</Project>
